@@ -6,8 +6,8 @@ import Loader from "./Loader"; // Import Loader
 // images
 import ambience1 from "../assets/gallery/ambience1.jpg";
 import ambience2 from "../assets/gallery/ambience2.jpg";
-import Cake1 from "../assets/gallery/Cake1.jpg";
-import Cake2 from "../assets/gallery/Cake2.jpg";
+import cake1 from "../assets/gallery/cake1.jpg";
+import cake2 from "../assets/gallery/cake2.jpg";
 import cake3 from "../assets/gallery/cake3.jpg";
 import cake4 from "../assets/gallery/cake4.jpg";
 import cake5 from "../assets/gallery/cake5.jpg";
