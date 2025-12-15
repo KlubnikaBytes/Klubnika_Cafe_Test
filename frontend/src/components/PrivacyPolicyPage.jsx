@@ -1,4 +1,3 @@
-// src/components/PrivacyPolicyPage.jsx
 import React from "react";
 import PolicyLayout from "./PolicyLayout";
 import { motion } from "framer-motion";
@@ -13,7 +12,7 @@ const PrivacyPolicyPage = () => {
         className="space-y-6"
       >
         <p className="text-neutral-400">
-          **Last Updated: 12th December 2025**
+          <strong>Last Updated: 12th December 2025</strong>
         </p>
 
         <section>
