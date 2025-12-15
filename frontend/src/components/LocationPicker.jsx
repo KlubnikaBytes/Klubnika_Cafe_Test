@@ -3,8 +3,6 @@ import { GoogleMap, useJsApiLoader, Marker, Autocomplete } from '@react-google-m
 import haversine from 'haversine';
 
 const LIBRARIES = ['places'];
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-
 // Cafe Coordinates
 // Updated Cafe Coordinates
 const CAFE_LOCATION = { lat: 22.7339544, lng: 87.5219511 };
@@ -17,7 +15,7 @@ const mapContainerStyle = {
 
 const LocationPicker = ({ onLocationSelect }) => {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     libraries: LIBRARIES,
   });
 
