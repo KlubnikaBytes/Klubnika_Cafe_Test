@@ -1,6 +1,5 @@
-// src/components/TermsPage.jsx
 import React from "react";
-import PolicyLayout from "./PolicyLayout"; // Assuming you will create this
+import PolicyLayout from "./PolicyLayout";
 import { motion } from "framer-motion";
 
 const TermsPage = () => {
@@ -13,7 +12,7 @@ const TermsPage = () => {
         className="space-y-6"
       >
         <p className="text-neutral-400">
-          **Last Updated: 12th December 2025**
+          <strong>Last Updated: 12th December 2025</strong>
         </p>
 
         <section>
@@ -49,19 +48,3 @@ const TermsPage = () => {
 };
 
 export default TermsPage;
-
-// NOTE: You will need to create a simple PolicyLayout component to wrap all these pages.
-// If you don't have it, use the structure from the next file's import.
-// For now, assume this is what PolicyLayout gives you:
-/*
-const PolicyLayout = ({ title, children }) => (
-  <div className="min-h-[60vh] pt-28 pb-10 px-4 sm:px-6 lg:px-8 bg-neutral-900">
-    <div className="max-w-4xl mx-auto">
-      <h2 className="text-3xl font-bold mb-8 text-rose-500 text-center">{title}</h2>
-      <div className="bg-neutral-800 p-6 sm:p-10 rounded-lg shadow-xl text-neutral-300">
-        {children}
-      </div>
-    </div>
-  </div>
-);
-*/
