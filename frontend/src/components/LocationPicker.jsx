@@ -3,7 +3,7 @@ import { GoogleMap, useJsApiLoader, Marker, Autocomplete } from '@react-google-m
 import haversine from 'haversine';
 
 const LIBRARIES = ['places'];
-const GOOGLE_MAPS_API_KEY = 'AIzaSyAi6M7uG1Q6fxE_s8kudSIRRTKJTTrR2Yk';
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 // Cafe Coordinates
 // Updated Cafe Coordinates
