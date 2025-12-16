@@ -25,25 +25,44 @@ const orderSchema = new mongoose.Schema({
     enum: ['Pending', 'Confirmed', 'Preparing', 'Out for Delivery', 'Delivered', 'Cancelled'],
     default: 'Pending',
   },
+  
+  // --- NEW: Order Type (Delivery vs Dine-in) ---
+  orderType: {
+    type: String,
+    enum: ['Delivery', 'Dine-in'],
+    default: 'Delivery'
+  },
+  
+  // --- NEW: Table Number (Only for Dine-in) ---
+  tableNumber: {
+    type: String,
+    // Optional: Only strictly needed if orderType is Dine-in
+  },
+
+  // --- UPDATED: Delivery Fields are now OPTIONAL ---
+  // (Because Dine-in orders won't have an address)
   deliveryAddress: {
     type: String,
-    required: true,
+    required: false, 
   },
   deliveryCoords: {
-    lat: { type: Number, required: true },
-    lng: { type: Number, required: true },
+    lat: { type: Number, required: false },
+    lng: { type: Number, required: false },
   },
+
+  // --- UPDATED: Payment Fields are now OPTIONAL ---
+  // (Because Cash orders won't have Razorpay IDs)
   paymentId: {
     type: String,
-    required: true,
+    required: false, 
   },
   razorpayOrderId: {
     type: String,
-    required: true,
+    required: false, 
   },
   paymentMethod: {
     type: String,
-    default: 'Unknown', 
+    default: 'Online', // Changed default to 'Online', but can be 'Cash'
   }
 }, { timestamps: true });
 
