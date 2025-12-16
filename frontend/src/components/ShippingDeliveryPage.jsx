@@ -12,13 +12,13 @@ const ShippingDeliveryPage = () => {
         className="space-y-6"
       >
         <p className="text-neutral-400">
-          <strong>Last Updated: 12th December 2025</strong>
+          <strong>Last Updated: 16th December 2025</strong>
         </p>
 
         <section>
           <h3 className="text-xl font-semibold mb-2 text-rose-400">Delivery Area and Times</h3>
           <p>
-            We currently deliver to the following areas: [List your delivery areas or state a radius, e.g., within a 5km radius of the restaurant]. Delivery service is available from <strong>10:00 AM to 10:00 PM</strong> daily.
+            We currently deliver to <strong>Govindapur, Chandrakona</strong>, and surrounding areas within a <strong>5km radius</strong> of the restaurant. Delivery service is available from <strong>10:00 AM to 10:00 PM</strong> daily.
           </p>
         </section>
 
