@@ -18,7 +18,7 @@ const ShippingDeliveryPage = () => {
         <section>
           <h3 className="text-xl font-semibold mb-2 text-rose-400">Delivery Area and Times</h3>
           <p>
-            We currently deliver to <strong>Govindapur, Chandrakona</strong>, and surrounding areas within a <strong>5km radius</strong> of the restaurant. Delivery service is available from <strong>10:00 AM to 10:00 PM</strong> daily.
+            We currently deliver to <strong>Govindapur, Chandrakona</strong>, and surrounding areas within a <strong>10km radius</strong> of the restaurant. Delivery service is available from <strong>10:00 AM to 10:00 PM</strong> daily.
           </p>
         </section>
 
@@ -35,7 +35,7 @@ const ShippingDeliveryPage = () => {
         <section>
           <h3 className="text-xl font-semibold mb-2 text-rose-400">Delivery Charges</h3>
           <p>
-            A delivery fee of <strong>₹50</strong> is applied to all orders below ₹500. Delivery is free for orders above ₹500.
+            A delivery fee might be applicable on orders below ₹500.
           </p>
         </section>
         
