@@ -12,7 +12,7 @@ const TermsPage = () => {
         className="space-y-6"
       >
         <p className="text-neutral-400">
-          <strong>Last Updated: 12th December 2025</strong>
+          <strong>Last Updated: 16th December 2025</strong>
         </p>
 
         <section>
@@ -26,6 +26,9 @@ const TermsPage = () => {
           <h3 className="text-xl font-semibold mb-2 text-rose-400">2. Ordering and Payment</h3>
           <p>
             All orders placed through the website are subject to availability and confirmation of the order price. Payment must be made at the time of placing the order. We use Razorpay for processing payments.
+          </p>
+          <p className="mt-2 text-sm text-neutral-400">
+             For details regarding order cancellations, returns, and refunds, please refer to our <a href="/refund" className="text-rose-400 underline">Cancellation and Refund Policy</a>.
           </p>
         </section>
         
@@ -41,6 +44,13 @@ const TermsPage = () => {
           <p>
             Klubnika Café reserves the right to change these terms at any time. Your continued use of the site following any changes constitutes your acceptance of the new terms.
           </p>
+        </section>
+        
+        <section>
+            <h3 className="text-xl font-semibold mb-2 text-rose-400">5. Contact Information</h3>
+            <p>
+                If you have any questions about these Terms, please contact us at <strong>debarunguria7@gmail.com</strong>.
+            </p>
         </section>
       </motion.div>
     </PolicyLayout>
