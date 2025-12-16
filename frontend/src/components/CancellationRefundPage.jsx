@@ -34,7 +34,7 @@ const CancellationRefundPage = () => {
         <section>
           <h3 className="text-xl font-semibold mb-2 text-rose-400">Contact for Refunds</h3>
           <p>
-            For all cancellation and refund inquiries, please email us at <strong>debarunguria7@gmail.com</strong> or call <strong>+91 98321 71757</strong>.
+            For all cancellation and refund inquiries, please email us at <strong>nguria7@gmail.com</strong> or call <strong>+91 9832171757</strong>.
           </p>
         </section>
       </motion.div>
