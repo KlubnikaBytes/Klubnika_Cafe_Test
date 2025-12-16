@@ -49,7 +49,7 @@ const TermsPage = () => {
         <section>
             <h3 className="text-xl font-semibold mb-2 text-rose-400">5. Contact Information</h3>
             <p>
-                If you have any questions about these Terms, please contact us at <strong>debarunguria7@gmail.com</strong>.
+                If you have any questions about these Terms, please contact us at <strong>nguria7@gmail.com</strong>.
             </p>
         </section>
       </motion.div>
