@@ -12,13 +12,13 @@ const CancellationRefundPage = () => {
         className="space-y-6"
       >
         <p className="text-neutral-400">
-          <strong>Last Updated: 12th December 2025</strong>
+          <strong>Last Updated: 16th December 2025</strong>
         </p>
 
         <section>
           <h3 className="text-xl font-semibold mb-2 text-rose-400">Cancellation Policy</h3>
           <p>
-            Orders can be cancelled <strong>within 5 minutes</strong> of being placed, provided the preparation of the food has not yet begun. To cancel, please contact us immediately via phone at <strong>+91 98765 43210</strong>. Orders that have moved to the 'Preparing' or 'Out for Delivery' status cannot be cancelled.
+            Orders can be cancelled <strong>within 5 minutes</strong> of being placed, provided the preparation of the food has not yet begun. To cancel, please contact us immediately via phone at <strong>+91 98321 71757</strong>. Orders that have moved to the 'Preparing' or 'Out for Delivery' status cannot be cancelled.
           </p>
         </section>
 
@@ -34,7 +34,7 @@ const CancellationRefundPage = () => {
         <section>
           <h3 className="text-xl font-semibold mb-2 text-rose-400">Contact for Refunds</h3>
           <p>
-            For all cancellation and refund inquiries, please email us at <strong>support@klubnikacafe.in</strong> or call <strong>+91 98765 43210</strong>.
+            For all cancellation and refund inquiries, please email us at <strong>debarunguria7@gmail.com</strong> or call <strong>+91 98321 71757</strong>.
           </p>
         </section>
       </motion.div>
