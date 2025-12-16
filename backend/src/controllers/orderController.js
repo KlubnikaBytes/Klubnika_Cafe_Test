@@ -1,13 +1,20 @@
 // backend/src/controllers/orderController.js
 const Order = require("../models/Order.js");
 const PDFDocument = require("pdfkit");
+const Razorpay = require("razorpay");
 const { sendEmail } = require("../config/mailer.js");
 const {
   sendUpdateSMS,
   sendDeliveredSMS,
 } = require("../utils/smsSender.js");
 
-// Helper: generate invoice PDF into a Buffer (for email attachment & downloads)
+// Initialize Razorpay
+const instance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+// Helper: generate invoice PDF into a Buffer
 const generateInvoicePdfBuffer = (order) =>
   new Promise((resolve, reject) => {
     try {
@@ -79,8 +86,6 @@ const generateInvoicePdfBuffer = (order) =>
 
 // @desc    Get all orders (Admin) OR Download Invoice (via Query Param)
 exports.getAllOrders = async (req, res) => {
-  // 1. Handle Invoice Download Request (e.g. if accessed via browser)
-  // URL: /api/orders?order_id=...&type=invoice
   if (req.query.type === 'invoice' && req.query.order_id) {
     try {
       const order = await Order.findById(req.query.order_id).populate(
@@ -106,7 +111,6 @@ exports.getAllOrders = async (req, res) => {
     }
   }
 
-  // 2. Standard Admin Behavior: Get All Orders
   try {
     const orders = await Order.find({})
       .populate("user", "name email mobile")
@@ -143,8 +147,6 @@ exports.updateOrderStatus = async (req, res) => {
 
     order.status = status;
     await order.save();
-
-    // Re-populate (if necessary)
     await order.populate("user", "name email mobile");
 
     // Socket events
@@ -152,18 +154,14 @@ exports.updateOrderStatus = async (req, res) => {
     io.to("admins").emit("orderStatusUpdate", order);
 
     const shortOrderId = order._id.toString().slice(-6).toUpperCase();
-
-    // Production Links for SMS (EXACT WHITELISTED MATCH)
     const trackingLink = "https://www.klubnikacafe.com/my-orders";
     const ratingsLink = "https://www.klubnikacafe.com/ratings";
 
     if (status === "Delivered") {
-      // SMS DELIVERED
       sendDeliveredSMS(order.user.mobile, shortOrderId, ratingsLink).catch((err) =>
         console.error("Delivered SMS Error:", err.message)
       );
 
-      // EMAIL DELIVERED
       const deliveredHtml = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
           <div style="background-color: #10b981; padding: 30px; text-align: center; color: white;">
@@ -189,13 +187,10 @@ exports.updateOrderStatus = async (req, res) => {
       ).catch((err) => console.error("Delivered Email Error:", err.message));
 
     } else if (status !== "Pending") {
-      // Status update SMS
-      // This sends to sendUpdateSMS, which uses the trackingLink variable
       sendUpdateSMS(order.user.mobile, shortOrderId, status, trackingLink).catch(
         (err) => console.error("Update SMS Error:", err.message)
       );
 
-      // EMAIL UPDATE
       const updateHtml = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
           <div style="background-color: #f43f5e; padding: 20px; text-align: center; color: white;">
@@ -227,6 +222,102 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
+// @desc    Cancel Order & Refund
+exports.cancelOrder = async (req, res) => {
+  const { reason } = req.body; // Optional reason from Admin/User
+  const io = req.io;
+  const userId = req.user.id;
+  const isAdmin = req.user.isAdmin; 
+
+  try {
+    const order = await Order.findById(req.params.id).populate("user", "name email mobile");
+    if (!order) return res.status(404).json({ error: "Order not found" });
+
+    // 1. Permission Check
+    // If it's a user (not admin), they can only cancel their own order.
+    if (!isAdmin && order.user._id.toString() !== userId) {
+      return res.status(403).json({ error: "Not authorized" });
+    }
+
+    // 2. Status Check
+    // Users can only cancel if Pending. Admins can cancel Pending or Confirmed.
+    if (!isAdmin && order.status !== "Pending") {
+      return res.status(400).json({ error: "Order cannot be cancelled at this stage." });
+    }
+    
+    if (order.status === "Cancelled" || order.status === "Delivered") {
+       return res.status(400).json({ error: "Order is already finalized." });
+    }
+
+    // 3. Process Razorpay Refund
+    // We need the paymentId and amount (in paise)
+    if (order.paymentId) {
+      try {
+        const refund = await instance.payments.refund(order.paymentId, {
+          amount: Math.round(order.totalAmount * 100), // Amount in paise
+          speed: "normal",
+          notes: {
+            reason: reason || "Customer/Admin requested cancellation",
+            order_id: order._id.toString()
+          }
+        });
+        console.log("✅ Refund Initiated:", refund.id);
+      } catch (refundError) {
+        console.error("❌ Razorpay Refund Error:", refundError);
+        // Note: You may want to return an error here if strict refunding is required.
+        // For now, we proceed to cancel the order in DB but log the error.
+      }
+    }
+
+    // 4. Update Database
+    order.status = "Cancelled";
+    await order.save();
+
+    // 5. Send Notifications (Socket)
+    io.to(order.user._id.toString()).emit("orderStatusUpdate", order);
+    io.to("admins").emit("orderStatusUpdate", order);
+
+    // 6. Send Email & SMS
+    const shortOrderId = order._id.toString().slice(-6).toUpperCase();
+
+    // -- EMAIL --
+    const cancelHtml = `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+        <div style="background-color: #ef4444; padding: 30px; text-align: center; color: white;">
+          <h1>Order Cancelled</h1>
+          <p>Refund Initiated</p>
+        </div>
+        <div style="padding: 30px;">
+          <p>Hi ${order.user.name},</p>
+          <p>Your order <strong>#${shortOrderId}</strong> has been cancelled.</p>
+          
+          <div style="background-color: #fef2f2; border: 1px solid #fca5a5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <p style="margin: 0; color: #b91c1c;"><strong>Refund Amount:</strong> ₹${order.totalAmount}</p>
+            <p style="margin: 5px 0 0 0; font-size: 12px; color: #7f1d1d;">The amount has been refunded to your original payment source. It usually takes 5-7 business days to reflect.</p>
+          </div>
+
+          <p><strong>Reason:</strong> ${reason || "Request by user/admin"}</p>
+          
+          <p>We hope to serve you again soon!</p>
+        </div>
+      </div>
+    `;
+
+    sendEmail(
+      order.user.email, 
+      `Order Cancelled #${shortOrderId} - Refund Initiated`, 
+      "Your order has been cancelled and refund initiated.", 
+      cancelHtml
+    ).catch(err => console.error("Cancel Email Error", err));
+
+    res.json({ message: "Order cancelled and refund initiated", order });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server Error during cancellation" });
+  }
+};
+
 // @desc    Generate and Download PDF Invoice
 exports.downloadInvoice = async (req, res) => {
   try {
@@ -254,5 +345,4 @@ exports.downloadInvoice = async (req, res) => {
   }
 };
 
-// Export helper for use in paymentController
 exports.generateInvoicePdfBuffer = generateInvoicePdfBuffer;
