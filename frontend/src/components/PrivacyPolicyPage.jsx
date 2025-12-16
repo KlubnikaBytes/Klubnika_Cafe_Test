@@ -47,7 +47,7 @@ const PrivacyPolicyPage = () => {
             <h3 className="text-xl font-semibold mb-2 text-rose-400">5. Contact Us</h3>
             <p>
                 If there are any questions regarding this privacy policy, you may contact us using the information below: <br/>
-                Email: <strong>debarunguria7@gmail.com</strong>
+                Email: <strong>nguria7@gmail.com</strong>
             </p>
         </section>
       </motion.div>
